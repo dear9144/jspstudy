@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="../resources/js/lib/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+	<div>	
+	<input type=text id= "model" placeholder="모델">
+	<input type=text id= "price" placeholder="가격">
+	<div><button id="btn1">텍스트요청</button></div>
+	<div id="content1"></div>
+	</div>
+	
+	<script>
+		$('#btn1').on('click', function(){
+			$('#content1').empty(); //내용 지우는거 
+			$.ajax({
+				/* 요청 */
+				type: 'get', //요청 메소드
+				url: '/01_Servlet/TextServlet',  //context는 /(슬래시)로 시작 , 요청 URL
+				// async: 앞으로 생략 (비동기요청) 생략 시 기본 true
+				data: 'model='+ $('#model').val() + '&price=' + $('#price').val(), //요청 파라미터 
+				
+			
+				/* 응답 */
+				dataType: 'text', //텍스트로 받아올 예정
+				success: (resData) =>{ //응답이 성공했을때 , 응답이 여기로 온것 항상 응답 데이타는 이렇게 쓰면 됨 
+					$('#content1').append(resData);		
+				},
+				error: (jqXHR)=>{//응답이 실패했을때 400 아님 500번대, 자바스크립트에선 javaScriptxhr로 썼었음 (확인)
+					$('#content1').append($('<div>').text('status : ' + jqXHR.status));
+					$('#content1').append($('<div>').text('responseText: ' + jqXHR.responseText));
+				},
+				
+				
+				})
+		})
+	
+	</script>
+	
+	<div>
+		<form id="frm_person">
+			<input type="text" name="name" placeholder="이름">
+			<input type="text" name="age" placeholder="나이">
+			<input type="button" id="btn2" value="JSON요청">
+		</form>
+			<div id="content2"></div>
+	</div>
+	<script>
+		$('#btn2').on('click', function() {
+			$('#content2').empty();
+			$.ajax({
+				/* 요청 */
+				type: 'get',
+				url: '/01_Servlet/JSONServlet',
+				data : $('#frm_person').serialize(), //직렬화, form 내부의 모든 입력요소들 (name속성이 파라미터로 인식된다)를 보냄
+				/* 응답 */
+				dataType: 'json',
+				success: (resData)=>{  //resData = '{"name":"마돈나", "age":50}' 작은따옴표 있으면 String 없으면 객체 
+					//$('#content2').append($('<div>').text(resData));
+					$('#content2').append($('<div>').text(resData.name));
+					$('#content2').append($('<div>').text(resData.age));
+				
+				},
+				error:(jqXHR) => {$('#content2').append($('<div>').text(jqXHR.status));
+								$('#content2').append($('<div>').text(jqXHR.responseText));
+				
+				}
+				
+			})
+			
+		})
+		
+		
+		
+	</script>
+	<div>
+		<form id="frm_book">
+			<input type="text" name="title" placeholder="제목">
+			<input type="text" name="author" placeholder="저자">
+			<input type="text" name="price" placeholder="가격">
+			<input type="button" id="btn3" value="XML요청">
+		</form>
+	</div>
+	<div id="content3"></div>
+	<script>
+		$('#btn3').on('click', function(){
+			$('#content3').empty();
+			$.ajax({
+				/* 요청 */
+				type: 'get',
+				url: '/01_Servlet/XMLServlet',
+				data: $('#frm_book').serialize(),
+				/* 응답 */
+				dataType: 'xml',
+				success: (resData)=>{
+					//var ul = '<ul>';이렇게 하면 단순 text
+					var ul = $('<ul>');
+					ul.append($('<li>').text('제목 : ' + $(resData).find('title').text()));
+					ul.append($('<li>').text('저자 : ' + $(resData).find('author').text()));
+					ul.append($('<li>').text('가격 : ' + $(resData).find('price').text() + '원'));
+					$('#content3').append(ul);
+				}
+					
+			})
+			
+		})
+	</script>
+</body>
+</html>

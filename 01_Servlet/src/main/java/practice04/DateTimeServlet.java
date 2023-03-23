@@ -1,9 +1,8 @@
-package pracitce04;
+package practice04;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import javax.servlet.ServletException;
@@ -12,17 +11,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.sun.tools.sjavac.server.SysInfo;
-
 
 @WebServlet("/datetime")
 public class DateTimeServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-  
-
-
+       
+ 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//요청 파라미터
 		String type = request.getParameter("type");
 		
 		String result = null;
@@ -45,13 +40,15 @@ public class DateTimeServlet extends HttpServlet {
 		out.println("<script>");
 		out.println("alert('요청 결과는 " + result + "입니다.')");
 		out.println("</script>");
+		out.print("<script>");
+		out.println("history.back()");
+		out.print("</script>");
 		out.flush();
 		out.close();
-	}
+}
 
-	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		
 		doGet(request, response);
 	}
 

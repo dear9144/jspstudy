@@ -9,26 +9,27 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
-@WebServlet("/practice05_1")
-public class practice05_1 extends HttpServlet {
+@WebServlet("/Practice05_1")
+public class Practice05_1 extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-   
-
+       
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+		// 냉장고 sysout으로 출력하고 Practice05_2로 리다이렉트
+		// 요청 인코딩
 		request.setCharacterEncoding("UTF-8");
 		
 		String model = request.getParameter("model");
-		System.out.println("Practice05_1 :" + model);
+		System.out.println("Practice05_1: " + model);
 		
-		//응답할 URL의 인코딩이 필요하다 
-		response.sendRedirect("/01_Servlet/practice05_2?model=" + URLEncoder.encode(model, "UTF-8"));
-		//응답 내보낼때 인코딩이 빠져서 오류가 난 것임 
+		
+		// 응답할 URL의 인코딩이 필요하다.
+		response.sendRedirect("/01_Servlet/Practice05_2?model=" + URLEncoder.encode(model, "UTF-8"));
+		
+		
 	}
 
-	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
 		doGet(request, response);
 	}
 
