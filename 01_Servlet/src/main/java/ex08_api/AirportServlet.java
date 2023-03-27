@@ -1,5 +1,4 @@
 package ex08_api;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -14,75 +13,73 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@WebServlet("/AirportServlet")
 
-@WebServlet("/AirKoreaApiServlet")
-public class AirKoreaApiServlet extends HttpServlet {
+public class AirportServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-  
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		//요청 인코딩
+
+		// 요청 인코딩
 		request.setCharacterEncoding("UTF-8");
 		
-		//요청 파라미터
-		String sidoName = request.getParameter("sidoName");
-		String returnType = request.getParameter("returnType");
+		// 요청 파라미터
+		String schDate = request.getParameter("schDate");
+		String schDeptCityCode = request.getParameter("schDeptCityCode");
+		String schArrvCityCode = request.getParameter("schArrvCityCode");
 		
-		//서비스키 
-		String serviceKey = "q5aH9sfKYNWJ2n+L/zIyMJP/TMBfAaplNbPHZ2GTOe/WCs6ytjQzc9250eTk1/MILoJdDck1sJzYkG74pRv3cQ==";
+		// 서비스키
+		String serviceKey = "bEQBRPHjt0tZrc7EsL0T8usfsZ1+wT+5jqamBef/ErC/5ZO6N7nYdRmrwR91bh5d3I1AQeY5qdbJOF6Kv0U1CQ==";
 		
-		//요청 주소
-		String apiURL = "http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty";
+		// 요청 주소
+		String apiURL = "http://openapi.airport.co.kr/service/rest/FlightScheduleList/getIflightScheduleList";
 		apiURL += "?serviceKey=" + URLEncoder.encode(serviceKey, "UTF-8");
-		apiURL += "&sidoName=" + URLEncoder.encode(sidoName, "UTF-8");
-		apiURL += "&returnType=" + URLEncoder.encode(returnType, "UTF-8");
+		apiURL += "&pageNo=" + URLEncoder.encode("1", "UTF-8");
+		apiURL += "&schDate=" + URLEncoder.encode(schDate, "UTF-8");
+		apiURL += "&schDeptCityCode=" + URLEncoder.encode(schDeptCityCode, "UTF-8");
+		apiURL += "&schArrvCityCode=" + URLEncoder.encode(schArrvCityCode, "UTF-8");
 		
 		// URL
-		URL url = new URL(apiURL); //try-catch 안할거라 그냥 new URL이 가능  
+		URL url = new URL(apiURL);
 		
 		// HttpURLConnection
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
 		
-		// 요청 메소드 
+		// 요청 메서드
 		con.setRequestMethod("GET");
 		
-		// returnType에 따른 Content-type MIME타입 말하는거
-		con.setRequestProperty("Content-Type", "application/" + returnType + "; charset=UTF-8");
+		// Content-Type
+		con.setRequestProperty("Content-Type", "application/xml; charset=UTF-8");
 		
 		// 입력 스트림 생성
-		BufferedReader reader = null; 
-		if(con.getResponseCode() == 200) {
+		BufferedReader reader = null;
+		if(con.getResponseCode() == HttpURLConnection.HTTP_OK) {
 			reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-		}else {
+		} else {
 			reader = new BufferedReader(new InputStreamReader(con.getErrorStream()));
 		}
 		
-		// 입력 (API의 응답 결과를 StringBuilder에 저장)
+		// API 응답 결과 받아오기
 		StringBuilder sb = new StringBuilder();
 		String line = null;
 		while((line = reader.readLine()) != null) {
 			sb.append(line);
 		}
 		
-		// 입력 스트림, 접속 종료 
+		// 사용한 자원 반납
 		reader.close();
 		con.disconnect();
 		
-		// API 결과를 ajax 응답 처리하기  -> 여기까지 작성하면 success가 받아온 상황
-		
-		response.setContentType("application/" + returnType + "; charset=UTF-8");
+		// API 응답 결과를 ajax으로 보내기
+		response.setContentType("application/xml; charset=UTF-8");
 		PrintWriter out = response.getWriter();
 		out.println(sb.toString());
 		out.flush();
 		out.close();
-		
-		
-		
+	
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
 		doGet(request, response);
 	}
 
